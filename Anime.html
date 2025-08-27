@@ -5,262 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Om Yudz Preset</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #111; color: #fff; margin: 0; }
-    header {
-      background: #222;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-      color: #0af;
-      font-weight: bold;
-    }
-    header input {
-      padding: 8px;
-      border-radius: 5px;
-      border: none;
-      outline: none;
-    }
-    .anime-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      padding: 20px;
-      justify-items: center;
-    }
-    .card {
-      position: relative;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      background: #000;
-      max-width: 150px; /* versi kecil */
-    }
-    .card img {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 9/16; /* portrait 9:16 */
-      object-fit: cover;
-      filter: brightness(0.7);
-      transition: 0.3s;
-    }
-    .card:hover img {
-      filter: brightness(1);
-      transform: scale(1.05);
-    }
-    .card-title {
-      position: absolute;
-      bottom: 10px;
-      left: 5px;
-      right: 5px;
-      color: #fff;
-      font-weight: bold;
-      font-size: 14px;
-      text-align: center;
-      text-shadow: 0 0 5px #000;
-    }
-    #episode-list button {
-      margin: 5px;
-      padding: 8px 12px;
-      border: none;
-      background: #0af;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #episode-list button:hover {
-      background: #08c;
-    }
-    video {
-      width: 90%;
-      max-width: 800px;
-      margin-top: 20px;
-    }
-    .back {
-      display: inline-block;
-      margin: 15px;
-      color: #0af;
-      text-decoration: none;
-    }
-    .link-presets a {
-      display: inline-block;
-      margin: 5px 0;
-      color: #0af;
-      text-decoration: none;
-    }
-    .link-presets a:hover {
-      color: #08c;
-    }
+    body { margin:0; font-family:Arial,sans-serif; background:#000; color:#fff; }
+    header { background:#111; padding:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 0 20px rgba(0,255,255,0.3); }
+    header h1 { color:#0ff; margin:0; text-shadow:0 0 5px #0ff,0 0 15px #0ff; }
+    header input { padding:8px; border:none; border-radius:5px; outline:none; }
+    .preset-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; padding:20px; }
+    .card { background:#111; border-radius:15px; padding:15px; cursor:pointer; position:relative; box-shadow:0 0 15px rgba(0,255,255,0.3); max-width:250px; margin:auto; }
+    .card img { width:100%; height:auto; aspect-ratio:9/16; object-fit:cover; border-radius:10px; transition:0.3s; filter:brightness(0.7); }
+    .card:hover img { filter:brightness(1); transform:scale(1.05); }
+    .card-title { margin-top:10px; font-size:1rem; color:#0ff; text-align:center; text-shadow:0 0 5px #0ff; }
+    #detail { display:none; text-align:center; padding:20px; }
+    #detail video { width:90%; max-width:600px; margin-top:15px; border-radius:10px; }
+    #episode-list button { margin:5px; padding:8px 12px; border:none; border-radius:5px; background:#0af; color:#fff; cursor:pointer; }
+    #episode-list button:hover { background:#08c; }
+    .back { display:inline-block; margin:10px 0; color:#0ff; text-decoration:none; }
+    .link-presets a { display:block; margin:3px 0; color:#0ff; text-decoration:none; }
+    .link-presets a:hover { color:#08c; text-decoration:underline; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🎬 YudPrst</h1>
-    <input type="text" id="search" placeholder="Cari preset...">
-  </header>
 
-  <!-- Halaman Home -->
-  <main id="home">
-    <div id="anime-list" class="anime-list"></div>
-  </main>
+<header>
+  <h1>✨ Om Yudz Preset ✨</h1>
+  <input type="text" id="search" placeholder="Cari preset...">
+</header>
 
-  <!-- Halaman Detail -->
-  <main id="detail" style="display:none; text-align:center;">
-    <a href="#" class="back" onclick="goHome()">⬅ Kembali</a>
-    <h1 id="anime-title"></h1>
-    <p id="anime-desc"></p>
-    <div class="link-presets" id="link-presets"></div>
-    <div id="episode-list"></div>
-    <div id="player-container"></div>
-  </main>
+<main id="home">
+  <div id="preset-list" class="preset-list"></div>
+</main>
 
-  <script>
-    // ====== Converter Google Drive ======
-    function convertDriveLink(url) {
-      const match = url.match(/\/d\/(.+?)\//);
-      if (match) {
-        return `https://drive.google.com/uc?export=download&id=${match[1]}`;
-      }
-      return url; // fallback
-    }
+<main id="detail">
+  <a href="#" class="back" onclick="goHome()">⬅ Kembali</a>
+  <h1 id="preset-title"></h1>
+  <p id="preset-desc"></p>
+  <div class="link-presets" id="link-presets"></div>
+  <div id="episode-list"></div>
+  <div id="player-container"></div>
+</main>
 
-    // ====== Data Anime ======
-    const animeData = [
-      {
-        id: "a",
-        title: "🎬 Animals 🥶 — By Om Yudz",
-        desc: "Seorang preset muda bercita-cita jadi Hokage.",
-        image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Mato%20Seihei%20no%20Slave.png",
-        preset: "https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/er4wVJNGog-1dba19b669df73ec", 
-        xml: "https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk 9:16",
-        xml: "https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk 1:1",
-        episodes: [
-          { title: "Episode 1", url: convertDriveLink("https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20%F0%9F%A5%B6.mp4") },
-          { title: "Episode 2", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") }
-        ]
-      },
-       const animeData = [
+<script>
+const presetsData = [
   {
-    id: "msns",
-    title: "🎬 Animals 🥶 — By Om Yudz",
-    desc: "Seorang ninja muda bercita-cita jadi Hokage.",
-    image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Mato%20Seihei%20no%20Slave.png",
-    preset: "https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/er4wVJNGog-1dba19b669df73ec", 
-    xml: [
-      "https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk 9:16",
-      "https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk 1:1"
-    ],
-    episodes: [
-      { title: "Video (9:16)", url: convertDriveLink("https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20%F0%9F%A5%B6.mp4") },
-      { title: "Video (1:1)", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") }
-    ]
+    id:"animals",
+    title:"🎬 Animals 🥶",
+    desc:"Preset Alight Motion 9:16 dan 1:1 by Om Yudz",
+    image:"https://files.catbox.moe/eer4qt.png",
+    preset:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/er4wVJNGog-1dba19b669df73ec",
+    xml:["https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk",
+         "https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk"],
+    video:"https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20%F0%9F%A5%B6.mp4"
+  },
+  {
+    id:"sad",
+    title:"🎬 Sad 🥀",
+    desc:"Preset Alight Motion 9:16 dan 4:5 by Om Yudz",
+    image:"https://files.catbox.moe/eer4qt.png",
+    preset:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/ztvOzeN1F9-d180e2f6c178508f",
+    xml:["https://drive.google.com/file/d/19vm-ksWwJYhJ4GNgBFh34-OBYWAjrBex/view?usp=drivesdk",
+         "https://drive.google.com/file/d/1A--uU4l0iaZ8UFTlPJg303cHETYWUBAF/view?usp=drivesdk"],
+    video:"https://github.com/YudaTole/My-video/raw/refs/heads/main/Sad%20%F0%9F%A5%80.mp4"
   }
 ];
 
-       {
-        id: "msns",
-        title: "MATO SEIHEI NO SLAVE",
-        desc: "Seorang ninja muda bercita-cita jadi Hokage.",
-        image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Mato%20Seihei%20no%20Slave.png",
-        preset: "https://alight.link/abcd1234", 
-        xml: "https://files.catbox.moe/test123.xml",
-        episodes: [
-          { title: "Episode 1", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") },
-          { title: "Episode 2", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") }
-        ]
-      },
-      {
-        id: "kak",
-        title: "KISAH ASMARA KITA",
-        desc: "Petualangan Luffy dan kru Topi Jerami mencari One Piece.",
-        image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Our%20Dating%20Story_The%20Experienced%20You%20and%20The%20Inexperienced%20Me.jpeg",
-        preset: "https://alight.link/efgh5678",
-        xml: "https://files.catbox.moe/test456.xml",
-        episodes: [
-          { title: "Episode 1", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") },
-          { title: "Episode 2", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") }
-        ]
-      }
-    ];
+const listContainer = document.getElementById("preset-list");
+const searchInput = document.getElementById("search");
+const homePage = document.getElementById("home");
+const detailPage = document.getElementById("detail");
 
-    const listContainer = document.getElementById("anime-list");
-    const searchInput = document.getElementById("search");
-    const homePage = document.getElementById("home");
-    const detailPage = document.getElementById("detail");
-
-    // ====== Render Daftar Anime ======
-    function renderList(keyword = "") {
-      listContainer.innerHTML = "";
-      animeData
-        .filter(a => a.title.toLowerCase().includes(keyword.toLowerCase()))
-        .forEach(anime => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            <img src="${anime.image}" alt="${anime.title}">
-            <div class="card-title">${anime.title}</div>
-            <a href="#" onclick="openAnime('${anime.id}')" style="position:absolute;top:0;left:0;right:0;bottom:0;"></a>
-          `;
-          listContainer.appendChild(card);
-        });
-    }
-
-    // ====== Buka Detail Anime ======
-    function openAnime(id) {
-      const anime = animeData.find(a => a.id === id);
-      if (!anime) return;
-
-      homePage.style.display = "none";
-      detailPage.style.display = "block";
-
-      document.getElementById("anime-title").textContent = anime.title;
-      document.getElementById("anime-desc").textContent = anime.desc;
-
-      // Link Preset & XML
-      const linkPresets = document.getElementById("link-presets");
-      linkPresets.innerHTML = `
-        <a href="${anime.preset}" target="_blank">🔗 Link Preset</a><br>
-        <a href="${anime.xml}" target="_blank">📂 Download XML</a>
+function renderList(keyword=""){
+  listContainer.innerHTML="";
+  presetsData.filter(p=>p.title.toLowerCase().includes(keyword.toLowerCase()))
+    .forEach(p=>{
+      const card=document.createElement("div");
+      card.className="card";
+      card.innerHTML=`
+        <img src="${p.image}" alt="${p.title}">
+        <div class="card-title">${p.title}</div>
+        <a href="#" onclick="openPreset('${p.id}')" style="position:absolute;top:0;left:0;right:0;bottom:0;"></a>
       `;
-
-      const episodeList = document.getElementById("episode-list");
-      episodeList.innerHTML = "";
-      document.getElementById("player-container").innerHTML = "";
-
-      anime.episodes.forEach(ep => {
-        const btn = document.createElement("button");
-        btn.textContent = ep.title;
-        btn.onclick = () => {
-          const player = document.getElementById("player-container");
-          player.innerHTML = `
-            <h2>${ep.title}</h2>
-            <video controls autoplay>
-              <source src="${ep.url}" type="video/mp4">
-              Browser tidak mendukung video.
-            </video>
-          `;
-        };
-        episodeList.appendChild(btn);
-      });
-    }
-
-    // ====== Kembali ke Home ======
-    function goHome() {
-      detailPage.style.display = "none";
-      homePage.style.display = "block";
-    }
-
-    // ====== Search ======
-    searchInput.addEventListener("input", () => {
-      renderList(searchInput.value);
+      listContainer.appendChild(card);
     });
+}
 
-    // Render awal
-    renderList();
-  </script>
+function openPreset(id){
+  const p = presetsData.find(x=>x.id===id);
+  if(!p) return;
+
+  homePage.style.display="none";
+  detailPage.style.display="block";
+
+  document.getElementById("preset-title").textContent=p.title;
+  document.getElementById("preset-desc").textContent=p.desc;
+
+  // Link Preset & XML
+  const linkDiv = document.getElementById("link-presets");
+  linkDiv.innerHTML=`<a href="${p.preset}" target="_blank">🔗 Link Preset</a>`;
+  p.xml.forEach((link,index)=>{
+    linkDiv.innerHTML+=`<a href="${link}" target="_blank">📑 Download XML ${index+1}</a>`;
+  });
+
+  // Video Player
+  const player = document.getElementById("player-container");
+  player.innerHTML=`<video controls autoplay><source src="${p.video}" type="video/mp4">Browser tidak mendukung video.</video>`;
+}
+
+function goHome(){
+  detailPage.style.display="none";
+  homePage.style.display="block";
+}
+
+// Search
+searchInput.addEventListener("input",()=>{renderList(searchInput.value);});
+
+// Render awal
+renderList();
+</script>
+
 </body>
 </html>
