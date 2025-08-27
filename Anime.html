@@ -5,131 +5,130 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Om Yudz Preset</title>
 <style>
-body { margin:0; font-family:Arial,sans-serif; background:#000; color:#fff; }
-header { background:#111; padding:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 0 20px rgba(0,255,255,0.3); }
-header h1 { color:#0ff; margin:0; text-shadow:0 0 5px #0ff,0 0 15px #0ff; }
-header input { padding:8px; border:none; border-radius:5px; outline:none; }
-.preset-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; padding:20px; justify-items:center; }
-.card { background:#111; border-radius:15px; padding:15px; cursor:pointer; position:relative; box-shadow:0 0 15px rgba(0,255,255,0.3); max-width:250px; }
-.card img { width:100%; height:auto; aspect-ratio:9/16; object-fit:cover; border-radius:10px; transition:0.3s; filter:brightness(0.7); }
-.card:hover img { filter:brightness(1); transform:scale(1.05); }
-.card-title { margin-top:10px; font-size:1rem; color:#0ff; text-align:center; text-shadow:0 0 5px #0ff; }
-#detail { display:none; text-align:center; padding:20px; }
-#detail video { width:90%; max-width:600px; margin-top:15px; border-radius:10px; }
-#episode-list button { margin:5px; padding:8px 12px; border:none; border-radius:5px; background:#0af; color:#fff; cursor:pointer; }
-#episode-list button:hover { background:#08c; }
-.back { display:inline-block; margin:10px 0; color:#0ff; text-decoration:none; }
-.link-presets a { display:block; margin:3px 0; color:#0ff; text-decoration:none; }
-.link-presets a:hover { color:#08c; text-decoration:underline; }
+  body {margin:0;font-family:Arial,sans-serif;background:#111;color:#fff;text-align:center;}
+  header{padding:20px;background:#222;display:flex;justify-content:space-between;align-items:center;}
+  header h1{color:#0af;margin:0;}
+  .anime-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;padding:20px;}
+  .card{background:#111;padding:20px;border-radius:15px;margin:20px;box-shadow:0 0 15px rgba(0,255,255,0.3);}
+  .card-title{color:#0ff;font-size:1.5rem;margin-bottom:10px;}
+  .card video{width:100%;border-radius:10px;margin-bottom:10px;}
+  .info p{margin:5px 0;color:#0ff;}
+  .info a{color:#0ff;text-decoration:none;font-weight:bold;}
+  .info a:hover{text-decoration:underline;}
+  .back{color:#0af;cursor:pointer;text-decoration:none;}
 </style>
 </head>
 <body>
 
 <header>
-<h1>✨ Om Yudz Preset ✨</h1>
-<input type="text" id="search" placeholder="Cari preset...">
+  <h1>✨ Om Yudz Preset ✨</h1>
+  <input type="text" id="search" placeholder="Cari preset...">
 </header>
 
 <main id="home">
-<div id="preset-list" class="preset-list"></div>
+  <div id="preset-list" class="anime-list"></div>
 </main>
 
-<main id="detail">
-<a href="#" class="back" onclick="goHome()">⬅ Kembali</a>
-<h1 id="preset-title"></h1>
-<p id="preset-desc"></p>
-<div class="link-presets" id="link-presets"></div>
-<div id="episode-list"></div>
-<div id="player-container"></div>
+<main id="detail" style="display:none;">
+  <a class="back" onclick="goHome()">⬅ Kembali</a>
+  <h1 id="preset-title"></h1>
+  <p id="preset-desc"></p>
+  <div id="player-container"></div>
+  <div id="xml-links"></div>
 </main>
 
 <script>
-const presetsData = [
+// ====== Data Preset ======
+const presets = [
   {
     id:"animals",
     title:"🎬 Animals 🥶",
-    desc:"Preset by Om Yudz, 9:16 & 1:1",
-    image:"https://files.catbox.moe/eer4qt.png",
-    preset:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/er4wVJNGog-1dba19b669df73ec",
-    xml:["https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk",
-         "https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk"],
+    desc:"Preset by Om Yudz",
     videos:[
-      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20%F0%9F%A5%B6.mp4",
-      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20Extra.mp4"
-    ]
+      {url:"https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20%F0%9F%A5%B6.mp4", size:"9:16"},
+      {url:"https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20Extra.mp4", size:"1:1"}
+    ],
+    xml:[
+      {url:"https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk", size:"9:16"},
+      {url:"https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk", size:"1:1"}
+    ],
+    project:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/er4wVJNGog"
   },
   {
     id:"sad",
     title:"🎬 Sad 🥀",
-    desc:"Preset by Om Yudz, 9:16 & 4:5",
-    image:"https://files.catbox.moe/eer4qt.png",
-    preset:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/ztvOzeN1F9-d180e2f6c178508f",
-    xml:["https://drive.google.com/file/d/19vm-ksWwJYhJ4GNgBFh34-OBYWAjrBex/view?usp=drivesdk",
-         "https://drive.google.com/file/d/1A--uU4l0iaZ8UFTlPJg303cHETYWUBAF/view?usp=drivesdk"],
+    desc:"Preset by Om Yudz",
     videos:[
-      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Sad%20%F0%9F%A5%80.mp4",
-      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Sad%20Extra.mp4"
-    ]
+      {url:"https://github.com/YudaTole/My-video/raw/refs/heads/main/Sad%20%F0%9F%A5%80.mp4", size:"9:16"},
+      {url:"https://github.com/YudaTole/My-video/raw/refs/heads/main/SadExtra.mp4", size:"4:5"}
+    ],
+    xml:[
+      {url:"https://drive.google.com/file/d/19vm-ksWwJYhJ4GNgBFh34-OBYWAjrBex/view?usp=drivesdk", size:"9:16"},
+      {url:"https://drive.google.com/file/d/1A--uU4l0iaZ8UFTlPJg303cHETYWUBAF/view?usp=drivesdk", size:"4:5"}
+    ],
+    project:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/ztvOzeN1F9-d180e2f6c178508f"
   }
 ];
 
-const listContainer = document.getElementById("preset-list");
+// ====== Render Card List ======
+const presetList = document.getElementById("preset-list");
 const searchInput = document.getElementById("search");
 const homePage = document.getElementById("home");
 const detailPage = document.getElementById("detail");
 
 function renderList(keyword=""){
-  listContainer.innerHTML="";
-  presetsData.filter(p=>p.title.toLowerCase().includes(keyword.toLowerCase()))
+  presetList.innerHTML="";
+  presets.filter(p=>p.title.toLowerCase().includes(keyword.toLowerCase()))
     .forEach(p=>{
       const card=document.createElement("div");
       card.className="card";
-      card.innerHTML=`
-        <img src="${p.image}" alt="${p.title}">
-        <div class="card-title">${p.title}</div>
-        <a href="#" onclick="openPreset('${p.id}')" style="position:absolute;top:0;left:0;right:0;bottom:0;"></a>
-      `;
-      listContainer.appendChild(card);
+      card.innerHTML=`<div class="card-title">${p.title}</div><a style="position:absolute;top:0;left:0;right:0;bottom:0;" onclick="openPreset('${p.id}')"></a>`;
+      presetList.appendChild(card);
     });
 }
 
+// ====== Open Detail ======
 function openPreset(id){
-  const p = presetsData.find(x=>x.id===id);
+  const p=presets.find(x=>x.id===id);
   if(!p) return;
-
   homePage.style.display="none";
   detailPage.style.display="block";
-
   document.getElementById("preset-title").textContent=p.title;
   document.getElementById("preset-desc").textContent=p.desc;
 
-  // Link Preset & XML
-  const linkDiv = document.getElementById("link-presets");
-  linkDiv.innerHTML=`<a href="${p.preset}" target="_blank">🔗 Link Preset</a>`;
-  p.xml.forEach((link,index)=>{
-    linkDiv.innerHTML+=`<a href="${link}" target="_blank">📑 Download XML ${index+1}</a>`;
-  });
+  // Player awal video pertama
+  const player=document.getElementById("player-container");
+  player.innerHTML=`<video controls autoplay><source src="${p.videos[0].url}" type="video/mp4">Browser tidak mendukung video.</video>`;
 
-  // Videos
-  const player = document.getElementById("player-container");
-  player.innerHTML="";
-  p.videos.forEach((vid,index)=>{
-    player.innerHTML+=`
-      <h3>Video ${index+1}</h3>
-      <video controls autoplay>
-        <source src="${vid}" type="video/mp4">
-        Browser tidak mendukung video.
-      </video>
-    `;
+  // XML links
+  const xmlDiv=document.getElementById("xml-links");
+  xmlDiv.innerHTML=`<p>📂 <a href="${p.project}" target="_blank">File Project</a></p>`;
+  p.xml.forEach(x=>{
+    const a=document.createElement("a");
+    a.textContent=`📑 File XML (${x.size})`;
+    a.href=x.url;
+    a.target="_blank";
+    a.style.cursor="pointer";
+    a.style.display="block";
+    a.addEventListener("click",(e)=>{
+      e.preventDefault();
+      // ganti video sesuai ukuran
+      const vid=p.videos.find(v=>v.size===x.size);
+      if(vid){
+        player.innerHTML=`<video controls autoplay><source src="${vid.url}" type="video/mp4">Browser tidak mendukung video.</video>`;
+      }
+    });
+    xmlDiv.appendChild(a);
   });
 }
 
+// ====== Go Home ======
 function goHome(){
   detailPage.style.display="none";
   homePage.style.display="block";
 }
 
-// Search
+// ====== Search ======
 searchInput.addEventListener("input",()=>{renderList(searchInput.value);});
 
 // Render awal
