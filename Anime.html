@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Om Yudz Preset</title>
-  <style>
-    body { margin:0; font-family:Arial,sans-serif; background:#000; color:#fff; }
-    header { background:#111; padding:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 0 20px rgba(0,255,255,0.3); }
-    header h1 { color:#0ff; margin:0; text-shadow:0 0 5px #0ff,0 0 15px #0ff; }
-    header input { padding:8px; border:none; border-radius:5px; outline:none; }
-    .preset-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; padding:20px; }
-    .card { background:#111; border-radius:15px; padding:15px; cursor:pointer; position:relative; box-shadow:0 0 15px rgba(0,255,255,0.3); max-width:250px; margin:auto; }
-    .card img { width:100%; height:auto; aspect-ratio:9/16; object-fit:cover; border-radius:10px; transition:0.3s; filter:brightness(0.7); }
-    .card:hover img { filter:brightness(1); transform:scale(1.05); }
-    .card-title { margin-top:10px; font-size:1rem; color:#0ff; text-align:center; text-shadow:0 0 5px #0ff; }
-    #detail { display:none; text-align:center; padding:20px; }
-    #detail video { width:90%; max-width:600px; margin-top:15px; border-radius:10px; }
-    #episode-list button { margin:5px; padding:8px 12px; border:none; border-radius:5px; background:#0af; color:#fff; cursor:pointer; }
-    #episode-list button:hover { background:#08c; }
-    .back { display:inline-block; margin:10px 0; color:#0ff; text-decoration:none; }
-    .link-presets a { display:block; margin:3px 0; color:#0ff; text-decoration:none; }
-    .link-presets a:hover { color:#08c; text-decoration:underline; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Om Yudz Preset</title>
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#000; color:#fff; }
+header { background:#111; padding:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 0 20px rgba(0,255,255,0.3); }
+header h1 { color:#0ff; margin:0; text-shadow:0 0 5px #0ff,0 0 15px #0ff; }
+header input { padding:8px; border:none; border-radius:5px; outline:none; }
+.preset-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; padding:20px; justify-items:center; }
+.card { background:#111; border-radius:15px; padding:15px; cursor:pointer; position:relative; box-shadow:0 0 15px rgba(0,255,255,0.3); max-width:250px; }
+.card img { width:100%; height:auto; aspect-ratio:9/16; object-fit:cover; border-radius:10px; transition:0.3s; filter:brightness(0.7); }
+.card:hover img { filter:brightness(1); transform:scale(1.05); }
+.card-title { margin-top:10px; font-size:1rem; color:#0ff; text-align:center; text-shadow:0 0 5px #0ff; }
+#detail { display:none; text-align:center; padding:20px; }
+#detail video { width:90%; max-width:600px; margin-top:15px; border-radius:10px; }
+#episode-list button { margin:5px; padding:8px 12px; border:none; border-radius:5px; background:#0af; color:#fff; cursor:pointer; }
+#episode-list button:hover { background:#08c; }
+.back { display:inline-block; margin:10px 0; color:#0ff; text-decoration:none; }
+.link-presets a { display:block; margin:3px 0; color:#0ff; text-decoration:none; }
+.link-presets a:hover { color:#08c; text-decoration:underline; }
+</style>
 </head>
 <body>
 
 <header>
-  <h1>✨ Om Yudz Preset ✨</h1>
-  <input type="text" id="search" placeholder="Cari preset...">
+<h1>✨ Om Yudz Preset ✨</h1>
+<input type="text" id="search" placeholder="Cari preset...">
 </header>
 
 <main id="home">
-  <div id="preset-list" class="preset-list"></div>
+<div id="preset-list" class="preset-list"></div>
 </main>
 
 <main id="detail">
-  <a href="#" class="back" onclick="goHome()">⬅ Kembali</a>
-  <h1 id="preset-title"></h1>
-  <p id="preset-desc"></p>
-  <div class="link-presets" id="link-presets"></div>
-  <div id="episode-list"></div>
-  <div id="player-container"></div>
+<a href="#" class="back" onclick="goHome()">⬅ Kembali</a>
+<h1 id="preset-title"></h1>
+<p id="preset-desc"></p>
+<div class="link-presets" id="link-presets"></div>
+<div id="episode-list"></div>
+<div id="player-container"></div>
 </main>
 
 <script>
@@ -48,22 +48,28 @@ const presetsData = [
   {
     id:"animals",
     title:"🎬 Animals 🥶",
-    desc:"Preset Alight Motion 9:16 dan 1:1 by Om Yudz",
+    desc:"Preset by Om Yudz, 9:16 & 1:1",
     image:"https://files.catbox.moe/eer4qt.png",
     preset:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/er4wVJNGog-1dba19b669df73ec",
     xml:["https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk",
          "https://drive.google.com/file/d/19j_EKwVtJJ4sBtqrT5NNoHDwONG099fE/view?usp=drivesdk"],
-    video:"https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20%F0%9F%A5%B6.mp4"
+    videos:[
+      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20%F0%9F%A5%B6.mp4",
+      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Animals%20Extra.mp4"
+    ]
   },
   {
     id:"sad",
     title:"🎬 Sad 🥀",
-    desc:"Preset Alight Motion 9:16 dan 4:5 by Om Yudz",
+    desc:"Preset by Om Yudz, 9:16 & 4:5",
     image:"https://files.catbox.moe/eer4qt.png",
     preset:"https://alightcreative.com/am/share/u/iel7k2pxXEhwjQBoWIwA0XMChRt2/p/ztvOzeN1F9-d180e2f6c178508f",
     xml:["https://drive.google.com/file/d/19vm-ksWwJYhJ4GNgBFh34-OBYWAjrBex/view?usp=drivesdk",
          "https://drive.google.com/file/d/1A--uU4l0iaZ8UFTlPJg303cHETYWUBAF/view?usp=drivesdk"],
-    video:"https://github.com/YudaTole/My-video/raw/refs/heads/main/Sad%20%F0%9F%A5%80.mp4"
+    videos:[
+      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Sad%20%F0%9F%A5%80.mp4",
+      "https://github.com/YudaTole/My-video/raw/refs/heads/main/Sad%20Extra.mp4"
+    ]
   }
 ];
 
@@ -104,9 +110,18 @@ function openPreset(id){
     linkDiv.innerHTML+=`<a href="${link}" target="_blank">📑 Download XML ${index+1}</a>`;
   });
 
-  // Video Player
+  // Videos
   const player = document.getElementById("player-container");
-  player.innerHTML=`<video controls autoplay><source src="${p.video}" type="video/mp4">Browser tidak mendukung video.</video>`;
+  player.innerHTML="";
+  p.videos.forEach((vid,index)=>{
+    player.innerHTML+=`
+      <h3>Video ${index+1}</h3>
+      <video controls autoplay>
+        <source src="${vid}" type="video/mp4">
+        Browser tidak mendukung video.
+      </video>
+    `;
+  });
 }
 
 function goHome(){
