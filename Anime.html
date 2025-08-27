@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YudNime</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #111; color: #fff; margin: 0; }
+    header {
+      background: #222;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #0af;
+      font-weight: bold;
+    }
+    header input {
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+    }
+    .anime-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .card {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #000;
+    }
+    .card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      filter: brightness(0.7);
+      transition: 0.3s;
+    }
+    .card:hover img {
+      filter: brightness(1);
+      transform: scale(1.05);
+    }
+    .card-title {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      text-shadow: 0 0 5px #000;
+    }
+    #episode-list button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      background: #0af;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #episode-list button:hover {
+      background: #08c;
+    }
+    video {
+      width: 90%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+    .back {
+      display: inline-block;
+      margin: 15px;
+      color: #0af;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎬 YudNime</h1>
+    <input type="text" id="search" placeholder="Cari anime...">
+  </header>
+
+  <!-- Halaman Home -->
+  <main id="home">
+    <div id="anime-list" class="anime-list"></div>
+  </main>
+
+  <!-- Halaman Detail -->
+  <main id="detail" style="display:none; text-align:center;">
+    <a href="#" class="back" onclick="goHome()">⬅ Kembali</a>
+    <h1 id="anime-title"></h1>
+    <p id="anime-desc"></p>
+    <div id="episode-list"></div>
+    <div id="player-container"></div>
+  </main>
+
+  <script>
+    // ====== Converter Google Drive ======
+    function convertDriveLink(url) {
+      const match = url.match(/\/d\/(.+?)\//);
+      if (match) {
+        return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+      }
+      return url; // fallback jika bukan link drive
+    }
+
+    // ====== Data Anime ======
+    const animeData = [
+      {
+        id: "msns",
+        title: "MATO SEIHEI NO SLAVE",
+        desc: "Seorang ninja muda bercita-cita jadi Hokage.",
+        image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Mato%20Seihei%20no%20Slave.png",
+        episodes: [
+          { 
+            title: "Episode 1", 
+            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
+          },
+          { 
+            title: "Episode 2", 
+            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
+          }
+        ]
+      },
+      {
+        id: "kak",
+        title: "KISAH ASMARA KITA",
+        desc: "Petualangan Luffy dan kru Topi Jerami mencari One Piece.",
+        image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Our%20Dating%20Story_The%20Experienced%20You%20and%20The%20Inexperienced%20Me.jpeg",
+        episodes: [
+          { 
+            title: "Episode 1", 
+            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
+          },
+          { 
+            title: "Episode 2", 
+            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
+          }
+        ]
+      }
+    ];
+
+    const listContainer = document.getElementById("anime-list");
+    const searchInput = document.getElementById("search");
+    const homePage = document.getElementById("home");
+    const detailPage = document.getElementById("detail");
+
+    // ====== Render Daftar Anime ======
+    function renderList(keyword = "") {
+      listContainer.innerHTML = "";
+      animeData
+        .filter(a => a.title.toLowerCase().includes(keyword.toLowerCase()))
+        .forEach(anime => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${anime.image}" alt="${anime.title}">
+            <div class="card-title">${anime.title}</div>
+            <a href="#" onclick="openAnime('${anime.id}')" style="position:absolute;top:0;left:0;right:0;bottom:0;"></a>
+          `;
+          listContainer.appendChild(card);
+        });
+    }
+
+    // ====== Buka Detail Anime ======
+    function openAnime(id) {
+      const anime = animeData.find(a => a.id === id);
+      if (!anime) return;
+
+      homePage.style.display = "none";
+      detailPage.style.display = "block";
+
+      document.getElementById("anime-title").textContent = anime.title;
+      document.getElementById("anime-desc").textContent = anime.desc;
+
+      const episodeList = document.getElementById("episode-list");
+      episodeList.innerHTML = "";
+      document.getElementById("player-container").innerHTML = "";
+
+      anime.episodes.forEach(ep => {
+        const btn = document.createElement("button");
+        btn.textContent = ep.title;
+        btn.onclick = () => {
+          const player = document.getElementById("player-container");
+          player.innerHTML = `
+            <h2>${ep.title}</h2>
+            <video controls autoplay>
+              <source src="${ep.url}" type="video/mp4">
+              Browser tidak mendukung video.
+            </video>
+          `;
+        };
+        episodeList.appendChild(btn);
+      });
+    }
+
+    // ====== Kembali ke Home ======
+    function goHome() {
+      detailPage.style.display = "none";
+      homePage.style.display = "block";
+    }
+
+    // ====== Search ======
+    searchInput.addEventListener("input", () => {
+      renderList(searchInput.value);
+    });
+
+    // Render awal
+    renderList();
+  </script>
+</body>
+</html>
