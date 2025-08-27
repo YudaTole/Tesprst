@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YudNime</title>
+  <title>YudPrst</title>
   <style>
     body { font-family: Arial, sans-serif; background: #111; color: #fff; margin: 0; }
     header {
@@ -27,9 +27,10 @@
     }
     .anime-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 15px;
       padding: 20px;
+      justify-items: center;
     }
     .card {
       position: relative;
@@ -37,10 +38,12 @@
       overflow: hidden;
       cursor: pointer;
       background: #000;
+      max-width: 150px; /* versi kecil */
     }
     .card img {
       width: 100%;
-      height: 140px;
+      height: auto;
+      aspect-ratio: 9/16; /* portrait 9:16 */
       object-fit: cover;
       filter: brightness(0.7);
       transition: 0.3s;
@@ -52,11 +55,12 @@
     .card-title {
       position: absolute;
       bottom: 10px;
-      left: 10px;
-      right: 10px;
+      left: 5px;
+      right: 5px;
       color: #fff;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px;
+      text-align: center;
       text-shadow: 0 0 5px #000;
     }
     #episode-list button {
@@ -82,11 +86,20 @@
       color: #0af;
       text-decoration: none;
     }
+    .link-presets a {
+      display: inline-block;
+      margin: 5px 0;
+      color: #0af;
+      text-decoration: none;
+    }
+    .link-presets a:hover {
+      color: #08c;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>🎬 YudNime</h1>
+    <h1>🎬 YudPrst</h1>
     <input type="text" id="search" placeholder="Cari anime...">
   </header>
 
@@ -100,6 +113,7 @@
     <a href="#" class="back" onclick="goHome()">⬅ Kembali</a>
     <h1 id="anime-title"></h1>
     <p id="anime-desc"></p>
+    <div class="link-presets" id="link-presets"></div>
     <div id="episode-list"></div>
     <div id="player-container"></div>
   </main>
@@ -111,7 +125,7 @@
       if (match) {
         return `https://drive.google.com/uc?export=download&id=${match[1]}`;
       }
-      return url; // fallback jika bukan link drive
+      return url; // fallback
     }
 
     // ====== Data Anime ======
@@ -121,15 +135,11 @@
         title: "MATO SEIHEI NO SLAVE",
         desc: "Seorang ninja muda bercita-cita jadi Hokage.",
         image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Mato%20Seihei%20no%20Slave.png",
+        preset: "https://alight.link/abcd1234", 
+        xml: "https://files.catbox.moe/test123.xml",
         episodes: [
-          { 
-            title: "Episode 1", 
-            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
-          },
-          { 
-            title: "Episode 2", 
-            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
-          }
+          { title: "Episode 1", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") },
+          { title: "Episode 2", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") }
         ]
       },
       {
@@ -137,15 +147,11 @@
         title: "KISAH ASMARA KITA",
         desc: "Petualangan Luffy dan kru Topi Jerami mencari One Piece.",
         image: "https://github.com/YudaTole/Data-Anime/raw/refs/heads/main/Our%20Dating%20Story_The%20Experienced%20You%20and%20The%20Inexperienced%20Me.jpeg",
+        preset: "https://alight.link/efgh5678",
+        xml: "https://files.catbox.moe/test456.xml",
         episodes: [
-          { 
-            title: "Episode 1", 
-            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
-          },
-          { 
-            title: "Episode 2", 
-            url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") 
-          }
+          { title: "Episode 1", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") },
+          { title: "Episode 2", url: convertDriveLink("https://files.catbox.moe/470kl7.mp4") }
         ]
       }
     ];
@@ -182,6 +188,13 @@
 
       document.getElementById("anime-title").textContent = anime.title;
       document.getElementById("anime-desc").textContent = anime.desc;
+
+      // Link Preset & XML
+      const linkPresets = document.getElementById("link-presets");
+      linkPresets.innerHTML = `
+        <a href="${anime.preset}" target="_blank">🔗 Link Preset</a><br>
+        <a href="${anime.xml}" target="_blank">📂 Download XML</a>
+      `;
 
       const episodeList = document.getElementById("episode-list");
       episodeList.innerHTML = "";
