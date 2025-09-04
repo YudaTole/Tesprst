@@ -1,231 +1,283 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Video + Preset & XML</title>
-  <meta name="description" content="Pemutar video dari Google Drive dengan tombol Preset Alight Motion dan XML judul/by." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OCC Video Downloader</title>
+  <meta name="description" content="Pemutar Google Drive + shortcut downloader TikTok / Instagram / Facebook. Dark mode, responsive, sticky footer." />
   <style>
-    :root{--bg:#0b0f16;--card:#121826;--muted:#8ea0b6;--text:#e6edf7;--acc:#5ac8fa;--acc2:#22d3ee;--ring:#2b3548}
+    :root{
+      --bg:#07090c;--card:#0f1720;--muted:#93a6bf;--text:#e6eef9;--accent:#3fb0ff;--accent2:#22d3ee;--glass:rgba(255,255,255,0.03);
+      --radius:12px;--mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace;
+    }
     *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#0b0f16,#0e1522);color:var(--text);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial}
-    a{color:var(--acc)}
-    .wrap{max-width:980px;margin-inline:auto;padding:20px}
-    header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:40px;height:40px;border-radius:12px;background:radial-gradient(circle at 30% 30%, #22d3ee, #2563eb);box-shadow:0 6px 20px #0b728533}
-    .title{font-weight:700;font-size:1.1rem}
-    .card{background:rgba(255,255,255,0.03);backdrop-filter:blur(6px);border:1px solid #1e2636;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .video-card{padding:10px}
-    .video{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;border:1px solid #20304b;background:#000}
-    .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .grid{display:grid;gap:14px}
-    @media(min-width:800px){.grid{grid-template-columns:1.2fr .8fr}}
-    .section{padding:16px}
-    .section h2{margin:0 0 10px;font-size:1rem}
-    .btn{appearance:none;border:1px solid #24405f;background:linear-gradient(180deg,#172338,#111827);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;font-weight:600;transition:transform .05s ease, border-color .2s}
-    .btn:hover{border-color:#2e8bc6}
-    .btn:active{transform:translateY(1px)}
-    .btn.full{width:100%}
-    .btn.row{justify-content:flex-start}
-    .row{display:flex;gap:10px;align-items:center}
-    .stack{display:flex;flex-direction:column;gap:10px}
-    .input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #233149;background:#0c1421;color:var(--text)}
-    .muted{color:var(--muted);font-size:.9rem}
-    .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #233149;background:#0e1a2b;color:#9ec7ff;padding:6px 10px;border-radius:999px;font-size:.8rem}
-    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#101826;border:1px solid #233149;padding:2px 6px;border-radius:6px}
-    footer{opacity:.75;font-size:.85rem;padding:18px;text-align:center}
-    .two{display:grid;gap:10px;grid-template-columns:1fr 1fr}
-    .two .btn{white-space:nowrap}
-    .code{background:#0b1220;border:1px solid #22314d;border-radius:12px;padding:10px;font-family:ui-monospace,Consolas,monospace;font-size:.9rem;overflow:auto}
-    .small{font-size:.85rem}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--text);background:linear-gradient(180deg,#05060a 0%, #0b1220 100%);-webkit-font-smoothing:antialiased}
+
+    /* Layout */
+    .wrap{max-width:980px;margin:20px auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(34,115,255,0.12)}
+    .logo strong{font-size:20px}
+    .title{font-weight:700;font-size:1rem}
+    .subtitle{color:var(--muted);font-size:0.85rem}
+
+    .card{background:var(--card);border-radius:var(--radius);padding:14px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+
+    /* Tabs */
+    .tabs{display:flex;gap:8px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);padding:8px;border-radius:12px;margin-bottom:12px}
+    .tab{flex:1;display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;cursor:pointer;justify-content:center;font-weight:600;color:var(--muted);user-select:none;border:1px solid transparent;transition:all .18s}
+    .tab.active{background:linear-gradient(90deg, rgba(63,176,255,0.12), rgba(34,211,238,0.06));color:var(--text);box-shadow:0 6px 18px rgba(34,115,255,0.06);border-color:rgba(63,176,255,0.12);transform:translateY(-2px)}
+    .tab .icon{font-size:18px}
+
+    /* Content area */
+    .content{margin-top:10px}
+    .pane{display:none;animation:fadeIn .22s ease both}
+    .pane.active{display:block}
+
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Drive player */
+    .player-wrap{position:relative;padding-top:56.25%;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#000}
+    .player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+    .form-row{display:flex;gap:8px;align-items:center}
+    .input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,#08101a,#07101a);color:var(--text)}
+    .btn{appearance:none;border:0;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:8px}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#032029;box-shadow:0 8px 20px rgba(34,115,255,0.12)}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+    .muted{color:var(--muted);font-size:0.9rem}
+
+    .dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+
+    /* Small screens */
+    @media(max-width:680px){
+      .tabs{flex-direction:row;gap:6px;overflow:auto;padding:6px}
+      .tab{min-width:110px;flex:0 0 auto;padding:10px}
+      .dl-grid{grid-template-columns:1fr}
+      .wrap{margin:12px;padding:12px}
+    }
+
+    /* Footer sticky */
+    .footer{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;padding:10px;background:linear-gradient(180deg, rgba(2,6,23,0.3), rgba(2,6,23,0.65));backdrop-filter:blur(6px);border-top:1px solid rgba(255,255,255,0.02);}
+    .footer small{color:var(--muted)}
+
+    /* helper */
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);background:var(--glass);display:inline-flex;align-items:center;gap:8px}
+    .center{display:flex;align-items:center;justify-content:center}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <div class="brand"><div class="logo" aria-hidden="true"></div><div>
-        <div class="title">Pemutar GDrive + Preset & XML</div>
-        <div class="muted small">Tempel link Google Drive & preset Alight Motion. Salin/unduh XML teks judul & by.</div>
-      </div></div>
-      <span class="chip">Tip: tekan <span class="kbd">Ctrl</span>+<span class="kbd">D</span> untuk bookmark</span>
+      <div class="brand">
+        <div class="logo"><strong>O</strong></div>
+        <div>
+          <div class="title">OCC Video Downloader</div>
+          <div class="subtitle">Google Drive • TikTok • Instagram • Facebook — Dark mode responsive</div>
+        </div>
+      </div>
+      <div class="chip">Tip: gunakan link share publik untuk Drive</div>
     </header>
 
-    <div class="grid">
-      <!-- LEFT: VIDEO -->
-      <div class="card video-card">
-        <div class="stack">
-          <label class="muted small">Link Google Drive (sharing atau file ID)</label>
-          <input id="driveInput" class="input" placeholder="Contoh: https://drive.google.com/file/d/FILE_ID/view?usp=drive_link" />
-          <button class="btn full" id="loadBtn">Tampilkan Video</button>
-          <div class="video" id="videoWrap" hidden>
+    <div class="card">
+      <div class="tabs" role="tablist" aria-label="Platform Tabs">
+        <div class="tab active" data-target="drive" role="tab" aria-selected="true"><span class="icon">🎬</span><span>Drive</span></div>
+        <div class="tab" data-target="tiktok" role="tab" aria-selected="false"><span class="icon">🎵</span><span>TikTok</span></div>
+        <div class="tab" data-target="instagram" role="tab" aria-selected="false"><span class="icon">📸</span><span>Instagram</span></div>
+        <div class="tab" data-target="facebook" role="tab" aria-selected="false"><span class="icon">📘</span><span>Facebook</span></div>
+      </div>
+
+      <div class="content">
+        <!-- DRIVE -->
+        <section id="drive" class="pane active" aria-labelledby="tab-drive">
+          <div class="muted">Masukkan link Google Drive (share atau FILE_ID). Klik "Tampilkan" untuk memutar. Pastikan file di-set "Anyone with the link".</div>
+          <div style="height:10px"></div>
+          <div class="form-row">
+            <input id="driveInput" class="input" placeholder="https://drive.google.com/file/d/FILE_ID/view?usp=sharing" />
+            <button id="loadBtn" class="btn primary">Tampilkan</button>
+            <button id="copyDrive" class="btn ghost">Salin</button>
+          </div>
+
+          <div style="height:12px"></div>
+          <div id="playerWrap" class="player-wrap" hidden>
             <iframe id="player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
           </div>
-          <div id="dlRow" class="row" hidden>
-            <span class="muted small">Direct download:</span>
-            <a id="dlLink" target="_blank" rel="noopener" class="chip">Buka tautan unduhan</a>
-          </div>
-          <div class="muted small">Catatan: pastikan file di Drive di-set <em>Anyone with the link</em> agar bisa diputar.</div>
-        </div>
-      </div>
 
-      <!-- RIGHT: LINKS & XML -->
-      <div class="card section">
-        <h2>Preset & XML</h2>
-        <div class="stack">
-          <label class="muted small">Link Preset Alight Motion</label>
-          <input id="presetInput" class="input" placeholder="Tempel link preset AM di sini" />
-          <div class="two">
-            <a id="openPreset" class="btn" target="_blank" rel="noopener">Buka Preset</a>
-            <button id="copyPreset" class="btn">Salin Link</button>
+          <div id="dlDriveRow" style="margin-top:10px;display:none;gap:8px;align-items:center;">
+            <div class="muted">Direct download:</div>
+            <a id="dlDrive" class="chip" target="_blank" rel="noopener">Buka tautan unduhan</a>
           </div>
-        </div>
+        </section>
 
-        <div style="height:10px"></div>
-        <h2>XML: Judul & By</h2>
-        <div class="stack">
-          <label class="muted small">Judul</label>
-          <textarea id="judulText" class="input" rows="2" placeholder="Contoh: Nightcore - Song Title"></textarea>
-          <div class="two">
-            <button class="btn" id="copyJudul">Salin</button>
-            <button class="btn" id="downloadJudul">Download judul.xml</button>
+        <!-- TIKTOK -->
+        <section id="tiktok" class="pane" aria-labelledby="tab-tiktok">
+          <div class="muted">Masukkan link video TikTok. Klik "Unduh" untuk membuka halaman downloader.</div>
+          <div style="height:10px"></div>
+          <div class="form-row">
+            <input id="ttInput" class="input" placeholder="https://www.tiktok.com/@user/video/123..." />
+            <button id="ttBtn" class="btn primary">Unduh</button>
+            <button id="ttCopy" class="btn ghost">Salin</button>
           </div>
-        </div>
-        <div class="stack" style="margin-top:8px">
-          <label class="muted small">By</label>
-          <textarea id="byText" class="input" rows="2" placeholder="Contoh: By Akume Yume Ai"></textarea>
-          <div class="two">
-            <button class="btn" id="copyBy">Salin</button>
-            <button class="btn" id="downloadBy">Download by.xml</button>
+          <div style="height:10px"></div>
+          <div class="dl-grid">
+            <a id="ttSss" class="btn ghost center" target="_blank" rel="noopener">Buka ssstik.io</a>
+            <a id="ttSaveFrom" class="btn ghost center" target="_blank" rel="noopener">Buka savefrom</a>
           </div>
-        </div>
+        </section>
 
-        <details style="margin-top:14px">
-          <summary class="muted">Lihat contoh isi XML</summary>
-          <div class="code small" id="xmlPreview"></div>
-        </details>
+        <!-- INSTAGRAM -->
+        <section id="instagram" class="pane" aria-labelledby="tab-instagram">
+          <div class="muted">Masukkan link Instagram (post atau reel). Klik "Unduh" untuk membuka halaman downloader.</div>
+          <div style="height:10px"></div>
+          <div class="form-row">
+            <input id="igInput" class="input" placeholder="https://www.instagram.com/p/ABC123..." />
+            <button id="igBtn" class="btn primary">Unduh</button>
+            <button id="igCopy" class="btn ghost">Salin</button>
+          </div>
+          <div style="height:10px"></div>
+          <div class="dl-grid">
+            <a id="igSnap" class="btn ghost center" target="_blank" rel="noopener">Buka snapinsta.app</a>
+            <a id="igInfl" class="btn ghost center" target="_blank" rel="noopener">Buka inflact</a>
+          </div>
+        </section>
 
-        <div class="muted small" style="margin-top:10px">Gunakan parameter URL untuk otomatis terisi: <code>?drive=...&preset=...&judul=...&by=...</code></div>
+        <!-- FACEBOOK -->
+        <section id="facebook" class="pane" aria-labelledby="tab-facebook">
+          <div class="muted">Masukkan link Facebook (post/video). Klik "Unduh" untuk membuka halaman downloader.</div>
+          <div style="height:10px"></div>
+          <div class="form-row">
+            <input id="fbInput" class="input" placeholder="https://www.facebook.com/.../videos/123..." />
+            <button id="fbBtn" class="btn primary">Unduh</button>
+            <button id="fbCopy" class="btn ghost">Salin</button>
+          </div>
+          <div style="height:10px"></div>
+          <div class="dl-grid">
+            <a id="fbSnap" class="btn ghost center" target="_blank" rel="noopener">Buka snapsave.app</a>
+            <a id="fbDownvids" class="btn ghost center" target="_blank" rel="noopener">Buka downvids</a>
+          </div>
+        </section>
       </div>
     </div>
+  </div>
 
-    <footer>
-      Dibuat untuk Yuda · Kompatibel dengan GitHub Pages. 
-    </footer>
+  <div class="footer">
+    <small>📩 Contact: omyudz05@gmail.com</small>
   </div>
 
   <script>
-    // --- Helper: ambil parameter query ---
+    // --- Tabs ---
+    const tabs = document.querySelectorAll('.tab');
+    const panes = document.querySelectorAll('.pane');
+    tabs.forEach(t=> t.addEventListener('click', ()=>{
+      tabs.forEach(x=> x.classList.remove('active'));
+      t.classList.add('active');
+      const target = t.dataset.target;
+      panes.forEach(p=> p.classList.toggle('active', p.id===target));
+      // set aria
+      tabs.forEach(x=> x.setAttribute('aria-selected', x===t));
+    }));
+
+    // --- Helpers ---
     const qs = new URLSearchParams(location.search);
-
-    // --- Elemen ---
-    const driveInput = document.getElementById('driveInput');
-    const presetInput = document.getElementById('presetInput');
-    const openPreset = document.getElementById('openPreset');
-    const copyPreset = document.getElementById('copyPreset');
-    const loadBtn = document.getElementById('loadBtn');
-    const player = document.getElementById('player');
-    const videoWrap = document.getElementById('videoWrap');
-    const dlRow = document.getElementById('dlRow');
-    const dlLink = document.getElementById('dlLink');
-    const judulText = document.getElementById('judulText');
-    const byText = document.getElementById('byText');
-    const copyJudul = document.getElementById('copyJudul');
-    const copyBy = document.getElementById('copyBy');
-    const downloadJudul = document.getElementById('downloadJudul');
-    const downloadBy = document.getElementById('downloadBy');
-    const xmlPreview = document.getElementById('xmlPreview');
-
-    // --- Prefill dari query ---
-    if(qs.get('drive')) driveInput.value = decodeURIComponent(qs.get('drive'));
-    if(qs.get('preset')) presetInput.value = decodeURIComponent(qs.get('preset'));
-    if(qs.get('judul')) judulText.value = decodeURIComponent(qs.get('judul'));
-    if(qs.get('by')) byText.value = decodeURIComponent(qs.get('by'));
-
-    // --- Parsing Google Drive link -> fileId ---
     function extractDriveId(input){
       if(!input) return '';
       const s = input.trim();
-      // 1) full file link: /file/d/FILE_ID/
       let m = s.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);
       if(m) return m[1];
-      // 2) open?id=FILE_ID
       m = s.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
       if(m) return m[1];
-      // 3) mungkin user langsung isi FILE_ID
       if(/^[a-zA-Z0-9_-]{20,}$/.test(s)) return s;
       return '';
     }
+    function buildPreviewUrl(id){return `https://drive.google.com/file/d/${id}/preview`;}
+    function buildDownloadUrl(id){return `https://drive.google.com/uc?export=download&id=${id}`;}
 
-    function buildPreviewUrl(fileId){
-      return `https://drive.google.com/file/d/${fileId}/preview`;
+    // --- DRIVE ---
+    const driveInput = document.getElementById('driveInput');
+    const loadBtn = document.getElementById('loadBtn');
+    const copyDrive = document.getElementById('copyDrive');
+    const playerWrap = document.getElementById('playerWrap');
+    const player = document.getElementById('player');
+    const dlDrive = document.getElementById('dlDrive');
+    const dlDriveRow = document.getElementById('dlDriveRow');
+
+    if(qs.get('drive')) driveInput.value = decodeURIComponent(qs.get('drive'));
+    loadBtn.addEventListener('click', ()=>{
+      const id = extractDriveId(driveInput.value);
+      if(!id){alert('Gagal membaca FILE_ID dari link Drive. Pastikan format benar.');return}
+      player.src = buildPreviewUrl(id);
+      playerWrap.hidden = false;
+      dlDrive.href = buildDownloadUrl(id);
+      dlDriveRow.style.display = 'flex';
+    });
+    copyDrive.addEventListener('click', ()=> navigator.clipboard.writeText(driveInput.value || ''));
+
+    // --- TIKTOK ---
+    const ttInput = document.getElementById('ttInput');
+    const ttBtn = document.getElementById('ttBtn');
+    const ttCopy = document.getElementById('ttCopy');
+    const ttSss = document.getElementById('ttSss');
+    const ttSaveFrom = document.getElementById('ttSaveFrom');
+    if(qs.get('tiktok')) ttInput.value = decodeURIComponent(qs.get('tiktok'));
+    function updateTtLinks(){
+      const l = encodeURIComponent(ttInput.value.trim());
+      ttSss.href = l? `https://ssstik.io/en?url=${l}` : '#';
+      ttSaveFrom.href = l? `https://en.savefrom.net/1-${l}` : '#';
     }
-    function buildDownloadUrl(fileId){
-      return `https://drive.google.com/uc?export=download&id=${fileId}`;
+    ttBtn.addEventListener('click', ()=>{ updateTtLinks(); if(ttSss.href!=='#') window.open(ttSss.href,'_blank') });
+    ttInput.addEventListener('input', updateTtLinks);
+    ttCopy.addEventListener('click', ()=> navigator.clipboard.writeText(ttInput.value || ''));
+    updateTtLinks();
+
+    // --- INSTAGRAM ---
+    const igInput = document.getElementById('igInput');
+    const igBtn = document.getElementById('igBtn');
+    const igCopy = document.getElementById('igCopy');
+    const igSnap = document.getElementById('igSnap');
+    const igInfl = document.getElementById('igInfl');
+    if(qs.get('instagram')) igInput.value = decodeURIComponent(qs.get('instagram'));
+    function updateIgLinks(){
+      const l = encodeURIComponent(igInput.value.trim());
+      igSnap.href = l? `https://snapinsta.app/?url=${l}` : '#';
+      igInfl.href = l? `https://inflact.com/downloader/instagram?link=${l}` : '#';
+    }
+    igBtn.addEventListener('click', ()=>{ updateIgLinks(); if(igSnap.href!=='#') window.open(igSnap.href,'_blank') });
+    igInput.addEventListener('input', updateIgLinks);
+    igCopy.addEventListener('click', ()=> navigator.clipboard.writeText(igInput.value || ''));
+    updateIgLinks();
+
+    // --- FACEBOOK ---
+    const fbInput = document.getElementById('fbInput');
+    const fbBtn = document.getElementById('fbBtn');
+    const fbCopy = document.getElementById('fbCopy');
+    const fbSnap = document.getElementById('fbSnap');
+    const fbDownvids = document.getElementById('fbDownvids');
+    if(qs.get('facebook')) fbInput.value = decodeURIComponent(qs.get('facebook'));
+    function updateFbLinks(){
+      const l = encodeURIComponent(fbInput.value.trim());
+      fbSnap.href = l? `https://snapsave.app/?url=${l}` : '#';
+      fbDownvids.href = l? `https://downvids.net/?url=${l}` : '#';
+    }
+    fbBtn.addEventListener('click', ()=>{ updateFbLinks(); if(fbSnap.href!=='#') window.open(fbSnap.href,'_blank') });
+    fbInput.addEventListener('input', updateFbLinks);
+    fbCopy.addEventListener('click', ()=> navigator.clipboard.writeText(fbInput.value || ''));
+    updateFbLinks();
+
+    // --- Auto open tab if query param provided ---
+    const openTab = qs.get('tab');
+    if(openTab){
+      const el = document.querySelector(`.tab[data-target="${openTab}"]`);
+      if(el) el.click();
     }
 
-    function setVideo(link){
-      const id = extractDriveId(link);
-      if(!id){
-        alert('Gagal membaca FILE_ID dari link Google Drive. Pastikan formatnya benar.');
-        return;
-      }
-      const prev = buildPreviewUrl(id);
-      const dl = buildDownloadUrl(id);
-      player.src = prev;
-      videoWrap.hidden = false;
-      dlLink.href = dl;
-      dlRow.hidden = false;
-    }
-
-    function updatePreset(){
-      const url = presetInput.value.trim();
-      openPreset.href = url || '#';
-      openPreset.classList.toggle('muted', !url);
-    }
-
-    function xmlTemplate(text){
-      // Template XML sederhana untuk teks statis.
-      return `<?xml version="1.0" encoding="UTF-8"?>\n<text>\n  <content>${escapeXml(text)}</content>\n</text>`;
-    }
-
-    function escapeXml(s){
-      return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&apos;');
-    }
-
-    function download(name, content){
-      const blob = new Blob([content], {type:'application/xml'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = name; a.click();
-      setTimeout(()=>URL.revokeObjectURL(url), 2000);
-    }
-
-    function refreshPreview(){
-      const j = xmlTemplate(judulText.value || '');
-      const b = xmlTemplate(byText.value || '');
-      xmlPreview.textContent = `// judul.xml\n${j}\n\n// by.xml\n${b}`;
-    }
-
-    // --- Events ---
-    loadBtn.addEventListener('click', ()=> setVideo(driveInput.value));
-    presetInput.addEventListener('input', updatePreset);
-    copyPreset.addEventListener('click', ()=> navigator.clipboard.writeText(presetInput.value || ''));
-
-    copyJudul.addEventListener('click', ()=> navigator.clipboard.writeText(judulText.value || ''));
-    copyBy.addEventListener('click', ()=> navigator.clipboard.writeText(byText.value || ''));
-    downloadJudul.addEventListener('click', ()=> download('judul.xml', xmlTemplate(judulText.value || '')));
-    downloadBy.addEventListener('click', ()=> download('by.xml', xmlTemplate(byText.value || '')));
-
-    judulText.addEventListener('input', refreshPreview);
-    byText.addEventListener('input', refreshPreview);
-
-    // Init
-    updatePreset();
-    refreshPreview();
-
-    // Auto-load video jika query disediakan
-    if(driveInput.value) setVideo(driveInput.value);
+    // Accessibility: allow Enter to submit in inputs
+    ;['driveInput','ttInput','igInput','fbInput'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); const btn = el.nextElementSibling; if(btn && btn.click) btn.click(); } });
+    });
   </script>
 </body>
 </html>
